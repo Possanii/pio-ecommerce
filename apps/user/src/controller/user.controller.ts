@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  Post,
+} from '@nestjs/common';
 import {
   CREATE_CUSTOMER_USE_CASE_TOKEN,
   ICreateCustomerUseCase,
@@ -13,6 +21,11 @@ import {
   IGetCustomerByIdUseCase,
 } from '../usecase/get-customer-by-id.usecase';
 import { IdDto } from '../dto/id.dto';
+import {
+  DELETE_USER_BY_ID_USE_CASE_TOKEN,
+  IDeleteUserByIdUseCase,
+} from '../usecase/delete-customer-by-id.usecase';
+import { UserTypeDto } from '../dto/user-type.dto';
 
 @Controller()
 export class UserController {
@@ -23,6 +36,8 @@ export class UserController {
     private readonly getAllCustomersUseCase: IGetAllCustomersUseCase,
     @Inject(GET_CUSTOMER_BY_ID_USE_CASE_TOKEN)
     private readonly getCustomerByIdUseCase: IGetCustomerByIdUseCase,
+    @Inject(DELETE_USER_BY_ID_USE_CASE_TOKEN)
+    private readonly deleteUserByIdUseCase: IDeleteUserByIdUseCase,
   ) {}
 
   @Post('/customer')
@@ -42,5 +57,14 @@ export class UserController {
   @Get('/customer/:id')
   async getCustomerById(@Param() param: IdDto) {
     return this.getCustomerByIdUseCase.execute(param.id);
+  }
+
+  @Delete('/customer/:id')
+  async deleteCustomerById(@Param() param: IdDto, @Body() body: UserTypeDto) {
+    await this.deleteUserByIdUseCase.execute(param.id, body.type);
+
+    return {
+      status: 204,
+    };
   }
 }

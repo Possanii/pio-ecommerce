@@ -15,6 +15,10 @@ import {
   GET_CUSTOMER_BY_ID_USE_CASE_TOKEN,
   GetCustomerByIdUseCase,
 } from './usecase/get-customer-by-id.usecase';
+import {
+  DELETE_USER_BY_ID_USE_CASE_TOKEN,
+  DeleteUserByIdUseCase,
+} from './usecase/delete-customer-by-id.usecase';
 
 @Module({
   imports: [
@@ -43,6 +47,10 @@ import {
     {
       provide: GET_CUSTOMER_BY_ID_USE_CASE_TOKEN,
       useClass: GetCustomerByIdUseCase,
+    },
+    {
+      provide: DELETE_USER_BY_ID_USE_CASE_TOKEN,
+      useClass: DeleteUserByIdUseCase,
     },
   ],
 })
