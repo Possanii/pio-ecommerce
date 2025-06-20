@@ -1,12 +1,23 @@
-import {Controller, Get} from '@nestjs/common';
-import {UserUseCase} from "../usecase/user.usecase";
+import { Body, Controller, Inject, Post } from '@nestjs/common';
+import {
+  CREATE_CUSTOMER_USE_CASE_TOKEN,
+  ICreateCustomerUseCase,
+} from '../usecase/create-customer.usecase';
+import { CreateUserInputDto } from '../dto/create-user-input.dto';
 
 @Controller()
 export class UserController {
-  constructor(private readonly userUseCase: UserUseCase) {}
+  constructor(
+    @Inject(CREATE_CUSTOMER_USE_CASE_TOKEN)
+    private readonly createCustomerUseCase: ICreateCustomerUseCase,
+  ) {}
 
-  @Get()
-  getHello(): string {
-    return this.userUseCase.getHello();
+  @Post('/customer')
+  async createCustomer(@Body() body: CreateUserInputDto) {
+    await this.createCustomerUseCase.execute(body);
+
+    return {
+      status: 201,
+    };
   }
 }
