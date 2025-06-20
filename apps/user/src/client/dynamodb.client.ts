@@ -5,6 +5,8 @@ import {
   GetCommand,
   GetCommandOutput,
   PutCommand,
+  ScanCommand,
+  ScanCommandOutput,
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
 import {
@@ -16,6 +18,7 @@ import { ILoggerClient, LOGGER_CLIENT_TOKEN } from './logger.client';
 
 export interface IDatabaseClient {
   getItem(command: GetCommand): Promise<GetCommandOutput>;
+  scanItems(command: ScanCommand): Promise<ScanCommandOutput>;
   putItem(command: PutCommand): Promise<void>;
   updateItem(command: UpdateCommand): Promise<void>;
   deleteItem(command: DeleteCommand): Promise<void>;
@@ -47,6 +50,16 @@ export class DynamoClient implements IDatabaseClient {
       return await this.instance.send(command);
     } catch (error) {
       this.logger.error('Error getting item from DynamoDB', error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  public async scanItems(command: ScanCommand): Promise<ScanCommandOutput> {
+    try {
+      this.logger.info('Retrieving all items from DynamoDB');
+      return await this.instance.send(command);
+    } catch (error) {
+      this.logger.error('Error retrieving all items from DynamoDB', error);
       throw new InternalServerErrorException(error);
     }
   }

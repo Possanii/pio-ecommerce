@@ -7,6 +7,10 @@ import {
 import { LOGGER_CLIENT_TOKEN, LoggerClient } from './client/logger.client';
 import { DynamoClient, DYNAMODB_CLIENT_TOKEN } from './client/dynamodb.client';
 import { ConfigModule } from '@nestjs/config';
+import {
+  GET_ALL_CUSTOMERS_USE_CASE_TOKEN,
+  GetAllCustomersUseCase,
+} from './usecase/get-all-customers.usecase';
 
 @Module({
   imports: [
@@ -27,6 +31,10 @@ import { ConfigModule } from '@nestjs/config';
     {
       provide: CREATE_CUSTOMER_USE_CASE_TOKEN,
       useClass: CreateCustomerUseCase,
+    },
+    {
+      provide: GET_ALL_CUSTOMERS_USE_CASE_TOKEN,
+      useClass: GetAllCustomersUseCase,
     },
   ],
 })
