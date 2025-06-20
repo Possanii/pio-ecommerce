@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
 import {
   CREATE_CUSTOMER_USE_CASE_TOKEN,
   ICreateCustomerUseCase,
@@ -8,6 +8,11 @@ import {
   GET_ALL_CUSTOMERS_USE_CASE_TOKEN,
   IGetAllCustomersUseCase,
 } from '../usecase/get-all-customers.usecase';
+import {
+  GET_CUSTOMER_BY_ID_USE_CASE_TOKEN,
+  IGetCustomerByIdUseCase,
+} from '../usecase/get-customer-by-id.usecase';
+import { IdDto } from '../dto/id.dto';
 
 @Controller()
 export class UserController {
@@ -16,6 +21,8 @@ export class UserController {
     private readonly createCustomerUseCase: ICreateCustomerUseCase,
     @Inject(GET_ALL_CUSTOMERS_USE_CASE_TOKEN)
     private readonly getAllCustomersUseCase: IGetAllCustomersUseCase,
+    @Inject(GET_CUSTOMER_BY_ID_USE_CASE_TOKEN)
+    private readonly getCustomerByIdUseCase: IGetCustomerByIdUseCase,
   ) {}
 
   @Post('/customer')
@@ -30,5 +37,10 @@ export class UserController {
   @Get('/customer')
   async getAllCustomers() {
     return this.getAllCustomersUseCase.execute();
+  }
+
+  @Get('/customer/:id')
+  async getCustomerById(@Param() param: IdDto) {
+    return this.getCustomerByIdUseCase.execute(param.id);
   }
 }

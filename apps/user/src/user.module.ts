@@ -11,6 +11,10 @@ import {
   GET_ALL_CUSTOMERS_USE_CASE_TOKEN,
   GetAllCustomersUseCase,
 } from './usecase/get-all-customers.usecase';
+import {
+  GET_CUSTOMER_BY_ID_USE_CASE_TOKEN,
+  GetCustomerByIdUseCase,
+} from './usecase/get-customer-by-id.usecase';
 
 @Module({
   imports: [
@@ -35,6 +39,10 @@ import {
     {
       provide: GET_ALL_CUSTOMERS_USE_CASE_TOKEN,
       useClass: GetAllCustomersUseCase,
+    },
+    {
+      provide: GET_CUSTOMER_BY_ID_USE_CASE_TOKEN,
+      useClass: GetCustomerByIdUseCase,
     },
   ],
 })
