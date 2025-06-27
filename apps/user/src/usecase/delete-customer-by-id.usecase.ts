@@ -7,6 +7,10 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { DeleteCommand } from '@aws-sdk/lib-dynamodb';
 import { UserType } from '../dto/user-type.dto';
+import {
+  GET_CUSTOMER_BY_ID_USE_CASE_TOKEN,
+  IGetCustomerByIdUseCase,
+} from './get-customer-by-id.usecase';
 
 export interface IDeleteUserByIdUseCase {
   execute(id: string, type: UserType): Promise<void>;
@@ -20,12 +24,23 @@ export const DELETE_USER_BY_ID_USE_CASE_TOKEN = Symbol(
 export class DeleteUserByIdUseCase implements IDeleteUserByIdUseCase {
   constructor(
     @Inject(LOGGER_CLIENT_TOKEN) private readonly logger: ILoggerClient,
+    @Inject(GET_CUSTOMER_BY_ID_USE_CASE_TOKEN)
+    private readonly getCustomerByIdUseCase: IGetCustomerByIdUseCase,
     @Inject(DYNAMODB_CLIENT_TOKEN) private readonly database: IDatabaseClient,
     private configService: ConfigService,
   ) {}
 
   async execute(id: string, type: UserType): Promise<void> {
     const usersTableName = this.configService.get<string>('USERS_TABLE_NAME');
+
+    this.logger.info('Checking if user exists in the database');
+
+    const customer = await this.getCustomerByIdUseCase.execute(id);
+
+    if (!customer) {
+      this.logger.warn('User not found in the database', { id, type });
+      return;
+    }
 
     this.logger.info('Deleting user by ID from the database', { id });
 
