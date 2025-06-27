@@ -27,7 +27,7 @@ import {
 } from '../usecase/delete-customer-by-id.usecase';
 import { UserTypeDto } from '../dto/user-type.dto';
 
-@Controller('/customer')
+@Controller('/customers')
 export class UserController {
   constructor(
     @Inject(CREATE_CUSTOMER_USE_CASE_TOKEN)
