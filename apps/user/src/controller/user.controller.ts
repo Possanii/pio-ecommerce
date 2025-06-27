@@ -27,7 +27,7 @@ import {
 } from '../usecase/delete-customer-by-id.usecase';
 import { UserTypeDto } from '../dto/user-type.dto';
 
-@Controller()
+@Controller('/customer')
 export class UserController {
   constructor(
     @Inject(CREATE_CUSTOMER_USE_CASE_TOKEN)
@@ -40,7 +40,7 @@ export class UserController {
     private readonly deleteUserByIdUseCase: IDeleteUserByIdUseCase,
   ) {}
 
-  @Post('/customer')
+  @Post()
   async createCustomer(@Body() body: CreateUserInputDto) {
     await this.createCustomerUseCase.execute(body);
 
@@ -49,17 +49,17 @@ export class UserController {
     };
   }
 
-  @Get('/customer')
+  @Get()
   async getAllCustomers() {
     return this.getAllCustomersUseCase.execute();
   }
 
-  @Get('/customer/:id')
+  @Get('/:id')
   async getCustomerById(@Param() param: IdDto) {
     return this.getCustomerByIdUseCase.execute(param.id);
   }
 
-  @Delete('/customer/:id')
+  @Delete('/:id')
   async deleteCustomerById(@Param() param: IdDto, @Body() body: UserTypeDto) {
     await this.deleteUserByIdUseCase.execute(param.id, body.type);
 
