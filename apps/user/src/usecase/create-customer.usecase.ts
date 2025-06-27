@@ -1,13 +1,17 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ILoggerClient, LOGGER_CLIENT_TOKEN } from '../client/logger.client';
-import {
-  DYNAMODB_CLIENT_TOKEN,
-  IDatabaseClient,
-} from '../client/dynamodb.client';
+
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import { CreateUserInputDto } from '../dto/create-user-input.dto';
 import { buildCustomerMapper } from '../mapper/build-customer.mapper';
 import { ConfigService } from '@nestjs/config';
+import {
+  ILoggerClient,
+  LOGGER_CLIENT_TOKEN,
+} from '@app/shared/src/client/logger.client';
+import {
+  DYNAMODB_CLIENT_TOKEN,
+  IDatabaseClient,
+} from '@app/shared/src/client/dynamodb.client';
 
 export interface ICreateCustomerUseCase {
   execute(user: CreateUserInputDto): Promise<void>;

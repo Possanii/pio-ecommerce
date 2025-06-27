@@ -1,12 +1,15 @@
 import { UserDto } from '../dto/user.dto';
 import { Inject, Injectable } from '@nestjs/common';
-import { ILoggerClient, LOGGER_CLIENT_TOKEN } from '../client/logger.client';
+import { ConfigService } from '@nestjs/config';
+import { GetCommand } from '@aws-sdk/lib-dynamodb';
+import {
+  ILoggerClient,
+  LOGGER_CLIENT_TOKEN,
+} from '@app/shared/src/client/logger.client';
 import {
   DYNAMODB_CLIENT_TOKEN,
   IDatabaseClient,
-} from '../client/dynamodb.client';
-import { ConfigService } from '@nestjs/config';
-import { GetCommand } from '@aws-sdk/lib-dynamodb';
+} from '@app/shared/src/client/dynamodb.client';
 
 export interface IGetCustomerByIdUseCase {
   execute(id: string): Promise<UserDto>;
