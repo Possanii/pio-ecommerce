@@ -38,7 +38,11 @@ export class DynamoClient implements IDatabaseClient {
         endpoint: process.env.DB_ENDPOINT,
       });
 
-      this.instance = DynamoDBDocumentClient.from(client);
+      this.instance = DynamoDBDocumentClient.from(client, {
+        marshallOptions: {
+          convertClassInstanceToMap: true,
+        },
+      });
     }
 
     this.logger.log('DynamoDB client initialized');
