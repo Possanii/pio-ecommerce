@@ -13,6 +13,10 @@ import {
   GET_PRODUCT_BY_ID_USE_CASE_TOKEN,
   GetProductByIdUseCase,
 } from '@app/product/src/usecase/get-product-by-id.usecase';
+import {
+  DELETE_PRODUCT_BY_ID_USE_CASE_TOKEN,
+  DeleteProductByIdUseCase,
+} from '@app/product/src/usecase/delete-product-by-id.usecase';
 
 @Module({
   imports: [SharedModule],
@@ -29,6 +33,10 @@ import {
     {
       provide: GET_PRODUCT_BY_ID_USE_CASE_TOKEN,
       useClass: GetProductByIdUseCase,
+    },
+    {
+      provide: DELETE_PRODUCT_BY_ID_USE_CASE_TOKEN,
+      useClass: DeleteProductByIdUseCase,
     },
   ],
 })

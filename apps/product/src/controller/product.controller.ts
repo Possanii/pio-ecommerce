@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Param,
+  Post,
+} from '@nestjs/common';
 import {
   CREATE_PRODUCT_USE_CASE_TOKEN,
   ICreateProductUseCase,
@@ -13,6 +21,10 @@ import {
   GET_PRODUCT_BY_ID_USE_CASE_TOKEN,
   IGetProductByIdUseCase,
 } from '@app/product/src/usecase/get-product-by-id.usecase';
+import {
+  DELETE_PRODUCT_BY_ID_USE_CASE_TOKEN,
+  IDeleteProductByIdUseCase,
+} from '@app/product/src/usecase/delete-product-by-id.usecase';
 
 @Controller(`/products`)
 export class ProductController {
@@ -23,6 +35,8 @@ export class ProductController {
     private readonly getProductsUseCase: IGetProductsUseCase,
     @Inject(GET_PRODUCT_BY_ID_USE_CASE_TOKEN)
     private readonly getProductByIdUseCase: IGetProductByIdUseCase,
+    @Inject(DELETE_PRODUCT_BY_ID_USE_CASE_TOKEN)
+    private readonly deleteProductByIdUseCase: IDeleteProductByIdUseCase,
   ) {}
 
   @Post()
@@ -42,5 +56,14 @@ export class ProductController {
   @Get('/:id')
   async getProductById(@Param() param: IdDto) {
     return this.getProductByIdUseCase.execute(param.id);
+  }
+
+  @Delete('/:id')
+  async deleteProductById(@Param() param: IdDto) {
+    await this.deleteProductByIdUseCase.execute(param.id);
+
+    return {
+      status: 204,
+    };
   }
 }
