@@ -6,7 +6,7 @@
     "purchase": {
       "type": "application",
       "root": "apps/purchase",
-      "entryFile": "main",
+      "entryFile": "purchase/src/main",
       "sourceRoot": "apps/purchase/src",
       "compilerOptions": {
         "tsConfigPath": "apps/purchase/tsconfig.app.json"
@@ -15,7 +15,7 @@
     "product": {
       "type": "application",
       "root": "apps/product",
-      "entryFile": "main",
+      "entryFile": "product/src/main",
       "sourceRoot": "apps/product/src",
       "compilerOptions": {
         "tsConfigPath": "apps/product/tsconfig.app.json"
@@ -24,7 +24,7 @@
     "user": {
       "type": "application",
       "root": "apps/user",
-      "entryFile": "main",
+      "entryFile": "user/src/main",
       "sourceRoot": "apps/user/src",
       "compilerOptions": {
         "tsConfigPath": "apps/user/tsconfig.app.json"
@@ -33,7 +33,7 @@
     "shared": {
       "type": "application",
       "root": "apps/shared",
-      "entryFile": "main",
+      "entryFile": "shared/src/main",
       "sourceRoot": "apps/shared/src",
       "compilerOptions": {
         "tsConfigPath": "apps/shared/tsconfig.app.json"
