@@ -13,6 +13,6 @@ export function buildPurchaseMapper(
     transactionId: purchase.transactionId,
     quantity: purchase.quantity,
     status: PurchaseStatus.REQUESTED,
-    createdAt: new Date(),
+    createdAt: new Date().toISOString(),
   };
 }

@@ -7,6 +7,6 @@ export class PurchaseDto {
   transactionId: string;
   quantity: number;
   status: PurchaseStatus;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
 }
