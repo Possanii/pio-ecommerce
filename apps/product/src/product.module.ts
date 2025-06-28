@@ -5,6 +5,10 @@ import {
   CREATE_PRODUCT_USE_CASE_TOKEN,
   CreateProductUseCase,
 } from '@app/product/src/usecase/create-product.usecase';
+import {
+  GET_PRODUCTS_USE_CASE_TOKEN,
+  GetProductsUseCase,
+} from '@app/product/src/usecase/get-products.usecase';
 
 @Module({
   imports: [SharedModule],
@@ -13,6 +17,10 @@ import {
     {
       provide: CREATE_PRODUCT_USE_CASE_TOKEN,
       useClass: CreateProductUseCase,
+    },
+    {
+      provide: GET_PRODUCTS_USE_CASE_TOKEN,
+      useClass: GetProductsUseCase,
     },
   ],
 })
