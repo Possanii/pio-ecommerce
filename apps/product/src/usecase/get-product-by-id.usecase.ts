@@ -16,7 +16,7 @@ export const GET_PRODUCT_BY_ID_USE_CASE_TOKEN = Symbol(
 );
 
 export interface IGetProductByIdUseCase {
-  execute(id: string): Promise<ProductDto>;
+  execute(id: string): Promise<ProductDto | null>;
 }
 
 @Injectable()
@@ -27,7 +27,7 @@ export class GetProductByIdUseCase implements IGetProductByIdUseCase {
     @Inject(DYNAMODB_CLIENT_TOKEN) private readonly database: IDatabaseClient,
   ) {}
 
-  async execute(id: string): Promise<ProductDto> {
+  async execute(id: string): Promise<ProductDto | null> {
     const productTableName =
       this.configService.get<string>('PRODUCT_TABLE_NAME');
 
