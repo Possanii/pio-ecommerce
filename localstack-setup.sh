@@ -6,3 +6,9 @@ awslocal dynamodb create-table \
     --attribute-definitions AttributeName=id,AttributeType=S AttributeName=type,AttributeType=S \
     --key-schema AttributeName=id,KeyType=HASH AttributeName=type,KeyType=RANGE \
     --billing-mode PAY_PER_REQUEST
+
+awslocal dynamodb create-table \
+    --table-name products \
+    --attribute-definitions AttributeName=id,AttributeType=S AttributeName=category,AttributeType=S \
+    --key-schema AttributeName=id,KeyType=HASH AttributeName=category,KeyType=RANGE \
+    --billing-mode PAY_PER_REQUEST

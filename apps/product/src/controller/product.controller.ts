@@ -1,12 +1,23 @@
-import {Controller, Get} from '@nestjs/common';
-import {ProductUseCase} from '../usecase/product.usecase';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
+import {
+  CREATE_PRODUCT_USE_CASE_TOKEN,
+  ICreateProductUseCase,
+} from '../usecase/create-product.usecase';
+import { CreateProductInputDto } from '@app/product/src/dto/create-product-input.dto';
 
-@Controller()
+@Controller(`/products`)
 export class ProductController {
-  constructor(private readonly productsUseCase: ProductUseCase) {}
+  constructor(
+    @Inject(CREATE_PRODUCT_USE_CASE_TOKEN)
+    private readonly createProductUseCase: ICreateProductUseCase,
+  ) {}
 
-  @Get()
-  getHello(): string {
-    return this.productsUseCase.getHello();
+  @Post()
+  async createProduct(@Body() body: CreateProductInputDto) {
+    await this.createProductUseCase.execute(body);
+
+    return {
+      status: 201,
+    };
   }
 }
