@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
 import {
   CREATE_PURCHASE_USE_CASE_TOKEN,
   ICreatePurchaseUseCase,
@@ -8,6 +8,11 @@ import {
   GET_PURCHASES_USE_CASE_TOKEN,
   IGetPurchasesUseCase,
 } from '@app/purchase/src/usecase/get-purchases.usecase';
+import { IdDto } from '@app/shared/src/dto/id.dto';
+import {
+  GET_PURCHASE_BY_ID_USE_CASE_TOKEN,
+  IGetPurchaseByIdUseCase,
+} from '@app/purchase/src/usecase/get-pruchase-by-id.usecase';
 
 @Controller('/purchases')
 export class PurchaseController {
@@ -16,6 +21,8 @@ export class PurchaseController {
     private readonly createPurchaseUseCase: ICreatePurchaseUseCase,
     @Inject(GET_PURCHASES_USE_CASE_TOKEN)
     private readonly getPurchasesUseCase: IGetPurchasesUseCase,
+    @Inject(GET_PURCHASE_BY_ID_USE_CASE_TOKEN)
+    private readonly getPurchaseByIdUseCase: IGetPurchaseByIdUseCase,
   ) {}
 
   @Post()
@@ -30,5 +37,10 @@ export class PurchaseController {
   @Get()
   async getPurchases() {
     return this.getPurchasesUseCase.execute();
+  }
+
+  @Get('/:id')
+  async getPurchaseById(@Param() param: IdDto) {
+    return this.getPurchaseByIdUseCase.execute(param.id);
   }
 }

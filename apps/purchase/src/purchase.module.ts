@@ -9,6 +9,10 @@ import {
   GET_PURCHASES_USE_CASE_TOKEN,
   GetPurchasesUseCase,
 } from '@app/purchase/src/usecase/get-purchases.usecase';
+import {
+  GET_PURCHASE_BY_ID_USE_CASE_TOKEN,
+  GetPurchaseByIdUseCase,
+} from '@app/purchase/src/usecase/get-pruchase-by-id.usecase';
 
 @Module({
   imports: [SharedModule],
@@ -21,6 +25,10 @@ import {
     {
       provide: GET_PURCHASES_USE_CASE_TOKEN,
       useClass: GetPurchasesUseCase,
+    },
+    {
+      provide: GET_PURCHASE_BY_ID_USE_CASE_TOKEN,
+      useClass: GetPurchaseByIdUseCase,
     },
   ],
 })
