@@ -20,7 +20,7 @@ import {
   GET_CUSTOMER_BY_ID_USE_CASE_TOKEN,
   IGetCustomerByIdUseCase,
 } from '../usecase/get-customer-by-id.usecase';
-import { IdDto } from '../dto/id.dto';
+import { IdDto } from '@app/shared/src/dto/id.dto';
 import {
   DELETE_USER_BY_ID_USE_CASE_TOKEN,
   IDeleteUserByIdUseCase,
