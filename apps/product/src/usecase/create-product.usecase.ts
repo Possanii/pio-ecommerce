@@ -11,6 +11,7 @@ import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import { ConfigService } from '@nestjs/config';
 import { buildProductMapper } from '@app/product/src/mapper/build-product.mapper';
 import { CreateProductInputDto } from '@app/product/src/dto/create-product-input.dto';
+import { TableName } from '@app/shared/src/constant/table-name.constant';
 
 export interface ICreateProductUseCase {
   execute(data: CreateProductInputDto): Promise<void>;
@@ -27,8 +28,7 @@ export class CreateProductUseCase implements ICreateProductUseCase {
   ) {}
 
   async execute(data: CreateProductInputDto): Promise<void> {
-    const productTableName =
-      this.configService.get<string>('PRODUCT_TABLE_NAME');
+    const productTableName = this.configService.get<string>(TableName.PRODUCTS);
 
     this.logger.info('Creating product');
     this.logger.debug('Product information:', { product: data });

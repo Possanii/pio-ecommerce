@@ -10,6 +10,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { GetCommand } from '@aws-sdk/lib-dynamodb';
 import { PurchaseDto } from '@app/purchase/src/dto/purchase.dto';
+import { TableName } from '@app/shared/src/constant/table-name.constant';
 
 export const GET_PURCHASE_BY_ID_USE_CASE_TOKEN = Symbol(
   'GET_PURCHASE_BY_ID_USE_CASE',
@@ -28,7 +29,7 @@ export class GetPurchaseByIdUseCase implements IGetPurchaseByIdUseCase {
 
   async execute(id: string): Promise<PurchaseDto | null> {
     const purchasesTableName = this.configService.get<string>(
-      'PURCHASES_TABLE_NAME',
+      TableName.PURCHASES,
     );
 
     this.logger.info('Getting purchase by ID from the database', { id });

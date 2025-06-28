@@ -12,6 +12,7 @@ import {
   DYNAMODB_CLIENT_TOKEN,
   IDatabaseClient,
 } from '@app/shared/src/client/dynamodb.client';
+import { TableName } from '@app/shared/src/constant/table-name.constant';
 
 export interface ICreateCustomerUseCase {
   execute(user: CreateUserInputDto): Promise<void>;
@@ -30,7 +31,7 @@ export class CreateCustomerUseCase implements ICreateCustomerUseCase {
   ) {}
 
   async execute(user: CreateUserInputDto): Promise<void> {
-    const usersTableName = this.configService.get<string>('USERS_TABLE_NAME');
+    const usersTableName = this.configService.get<string>(TableName.USERS);
 
     this.logger.info('Creating customer');
     this.logger.debug('Customer information:', { user });

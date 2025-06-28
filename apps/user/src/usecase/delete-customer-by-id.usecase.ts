@@ -15,6 +15,7 @@ import {
   DYNAMODB_CLIENT_TOKEN,
   IDatabaseClient,
 } from '@app/shared/src/client/dynamodb.client';
+import { TableName } from '@app/shared/src/constant/table-name.constant';
 
 export interface IDeleteUserByIdUseCase {
   execute(id: string, type: UserType): Promise<void>;
@@ -35,7 +36,7 @@ export class DeleteUserByIdUseCase implements IDeleteUserByIdUseCase {
   ) {}
 
   async execute(id: string, type: UserType): Promise<void> {
-    const usersTableName = this.configService.get<string>('USERS_TABLE_NAME');
+    const usersTableName = this.configService.get<string>(TableName.USERS);
 
     this.logger.info('Checking if user exists in the database');
 

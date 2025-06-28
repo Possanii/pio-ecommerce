@@ -10,6 +10,7 @@ import {
 } from '@app/shared/src/client/logger.client';
 import { ConfigService } from '@nestjs/config';
 import { ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { TableName } from '@app/shared/src/constant/table-name.constant';
 
 export const GET_PRODUCTS_USE_CASE_TOKEN = Symbol('GET_PRODUCTS_USE_CASE');
 
@@ -26,8 +27,7 @@ export class GetProductsUseCase implements IGetProductsUseCase {
   ) {}
 
   async execute(): Promise<ProductDto[]> {
-    const productTableName =
-      this.configService.get<string>('PRODUCT_TABLE_NAME');
+    const productTableName = this.configService.get<string>(TableName.PRODUCTS);
 
     this.logger.info('Requesting all products to dynamodb');
 

@@ -11,6 +11,7 @@ import {
 import { UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { PurchaseDto } from '@app/purchase/src/dto/purchase.dto';
 import { UpdatePurchaseDto } from '@app/purchase/src/dto/update-purchase-input.dto';
+import { TableName } from '@app/shared/src/constant/table-name.constant';
 
 export const UPDATE_PURCHASE_USE_CASE_TOKEN = Symbol(
   'UPDATE_PURCHASE_USE_CASE',
@@ -31,7 +32,7 @@ export class UpdatePurchaseUseCase implements IUpdatePurchaseUseCase {
 
   async execute(id: string, purchase: UpdatePurchaseDto): Promise<void> {
     const purchasesTableName = this.configService.get<string>(
-      'PURCHASES_TABLE_NAME',
+      TableName.PURCHASES,
     );
 
     this.logger.info('Updating purchase by Id', { id });

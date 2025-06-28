@@ -11,6 +11,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { buildPurchaseMapper } from '@app/purchase/src/mapper/build-purchase.mapper';
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
+import { TableName } from '@app/shared/src/constant/table-name.constant';
 
 export const CREATE_PURCHASE_USE_CASE_TOKEN = Symbol(
   'CREATE_PURCHASE_USE_CASE',
@@ -29,7 +30,7 @@ export class CreatePurchaseUseCase implements ICreatePurchaseUseCase {
   ) {}
   async execute(data: CreatePurchaseInputDto): Promise<void> {
     const purchasesTableName = this.configService.get<string>(
-      'PURCHASES_TABLE_NAME',
+      TableName.PURCHASES,
     );
 
     this.logger.info('Creating purchase');

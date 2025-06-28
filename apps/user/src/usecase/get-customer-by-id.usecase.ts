@@ -10,6 +10,7 @@ import {
   DYNAMODB_CLIENT_TOKEN,
   IDatabaseClient,
 } from '@app/shared/src/client/dynamodb.client';
+import { TableName } from '@app/shared/src/constant/table-name.constant';
 
 export interface IGetCustomerByIdUseCase {
   execute(id: string): Promise<UserDto>;
@@ -28,7 +29,7 @@ export class GetCustomerByIdUseCase implements IGetCustomerByIdUseCase {
   ) {}
 
   async execute(id: string): Promise<UserDto | null> {
-    const usersTableName = this.configService.get<string>('USERS_TABLE_NAME');
+    const usersTableName = this.configService.get<string>(TableName.USERS);
 
     this.logger.info('Getting customer by ID from the database', { id });
 

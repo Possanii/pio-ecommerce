@@ -13,6 +13,7 @@ import {
   GET_PRODUCT_BY_ID_USE_CASE_TOKEN,
   IGetProductByIdUseCase,
 } from '@app/product/src/usecase/get-product-by-id.usecase';
+import { TableName } from '@app/shared/src/constant/table-name.constant';
 
 export const DELETE_PRODUCT_BY_ID_USE_CASE_TOKEN = Symbol(
   'DELETE_PRODUCT_BY_ID_USE_CASE',
@@ -33,8 +34,7 @@ export class DeleteProductByIdUseCase implements IDeleteProductByIdUseCase {
   ) {}
 
   async execute(id: string): Promise<void> {
-    const productTableName =
-      this.configService.get<string>('PRODUCT_TABLE_NAME');
+    const productTableName = this.configService.get<string>(TableName.PRODUCTS);
 
     this.logger.info('Checking if product exists in the database');
 

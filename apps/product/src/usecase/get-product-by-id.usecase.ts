@@ -10,6 +10,7 @@ import {
   IDatabaseClient,
 } from '@app/shared/src/client/dynamodb.client';
 import { GetCommand } from '@aws-sdk/lib-dynamodb';
+import { TableName } from '@app/shared/src/constant/table-name.constant';
 
 export const GET_PRODUCT_BY_ID_USE_CASE_TOKEN = Symbol(
   'GET_PRODUCT_BY_ID_USE_CASE',
@@ -28,8 +29,7 @@ export class GetProductByIdUseCase implements IGetProductByIdUseCase {
   ) {}
 
   async execute(id: string): Promise<ProductDto | null> {
-    const productTableName =
-      this.configService.get<string>('PRODUCT_TABLE_NAME');
+    const productTableName = this.configService.get<string>(TableName.PRODUCTS);
 
     this.logger.info(`Requesting product with id ${id} from dynamodb`);
 

@@ -10,6 +10,7 @@ import {
 } from '@app/shared/src/client/dynamodb.client';
 import { ConfigService } from '@nestjs/config';
 import { ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { TableName } from '@app/shared/src/constant/table-name.constant';
 
 export const GET_PURCHASES_USE_CASE_TOKEN = Symbol('GET_PURCHASES_USE_CASE');
 
@@ -26,7 +27,7 @@ export class GetPurchasesUseCase implements IGetPurchasesUseCase {
 
   async execute(): Promise<PurchaseDto[]> {
     const purchaseTableName = this.configService.get<string>(
-      'PURCHASES_TABLE_NAME',
+      TableName.PURCHASES,
     );
 
     this.logger.info('Requesting all purchases to dynamodb');
