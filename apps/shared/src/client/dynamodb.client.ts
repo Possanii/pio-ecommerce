@@ -36,6 +36,7 @@ export class DynamoClient implements IDatabaseClient {
     if (!this.instance) {
       const client = new DynamoDBClient({
         endpoint: process.env.DB_ENDPOINT,
+        region: process.env.DB_REGION,
       });
 
       this.instance = DynamoDBDocumentClient.from(client, {
