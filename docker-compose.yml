@@ -11,3 +11,51 @@ services:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "./localstack-setup.sh:/etc/localstack/init/ready.d/script.sh"
+
+  product:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP: product
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_ENDPOINT=http://localstack:4566
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+
+  purchase:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP: purchase
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_ENDPOINT=http://localstack:4566
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+
+  user:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP: user
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_ENDPOINT=http://localstack:4566
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
