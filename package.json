@@ -14,7 +14,7 @@
     "start:dev:purchase": "nest start --watch purchase",
     "start:dev:user": "nest start --watch user",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "concurrently \"node dist/apps/user/user/src/main\" \"node dist/apps/product/product/src/main\" \"node dist/apps/purchase/purchase/src/main\"",
+    "start:prod": "node dist/apps/pio-ecommerce/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
