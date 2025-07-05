@@ -1,16 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { UserDto } from '../dto/user.dto';
 import {
   ILoggerClient,
   LOGGER_CLIENT_TOKEN,
 } from '@app/shared/src/client/logger.client';
 import {
-  DYNAMODB_CLIENT_TOKEN,
-  IDatabaseClient,
-} from '@app/shared/src/client/dynamodb.client';
-import { TableName } from '@app/shared/src/constant/table-name.constant';
+  IUserRepository,
+  USER_REPOSITORY_TOKEN,
+} from '@app/user/src/repository/user.repo';
+import { UserType } from '@app/user/src/dto/user-type.dto';
 
 export interface IGetAllCustomersUseCase {
   execute(): Promise<UserDto[]>;
@@ -21,31 +19,21 @@ export const GET_ALL_CUSTOMERS_USE_CASE_TOKEN = Symbol(
 );
 
 @Injectable()
-export class GetAllCustomersUseCase implements IGetAllCustomersUseCase {
+export class GetAllCustomersUsecase implements IGetAllCustomersUseCase {
   constructor(
     @Inject(LOGGER_CLIENT_TOKEN) private readonly logger: ILoggerClient,
-    @Inject(DYNAMODB_CLIENT_TOKEN) private readonly database: IDatabaseClient,
-    private configService: ConfigService,
+    @Inject(USER_REPOSITORY_TOKEN) private readonly userRepo: IUserRepository,
   ) {}
 
   async execute(): Promise<UserDto[]> {
-    const usersTableName = this.configService.get<string>(TableName.USERS);
-
     this.logger.info('Requesting all customers to dynamodb');
 
-    const command: ScanCommand = new ScanCommand({
-      TableName: usersTableName,
-      FilterExpression: '#type = :type',
-      ExpressionAttributeNames: {
-        '#type': 'type',
-      },
-      ExpressionAttributeValues: {
-        ':type': 'CUSTOMER',
-      },
+    const customers = await this.userRepo.getAllByType(UserType.CUSTOMER);
+
+    this.logger.info('All customers have been retrieved successfully', {
+      total: customers.length,
     });
 
-    const scanOutput = await this.database.scanItems(command);
-
-    return scanOutput.Items as UserDto[];
+    return customers;
   }
 }
