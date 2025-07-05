@@ -10,7 +10,7 @@ import {
 import {
   CREATE_PURCHASE_USE_CASE_TOKEN,
   ICreatePurchaseUseCase,
-} from '../usecase/purchase.usecase';
+} from '../usecase/crete-purchase.usecase';
 import { CreatePurchaseInputDto } from '@app/purchase/src/dto/create-purchase-input.dto';
 import {
   GET_PURCHASES_USE_CASE_TOKEN,
@@ -20,7 +20,7 @@ import { IdDto } from '@app/shared/src/dto/id.dto';
 import {
   GET_PURCHASE_BY_ID_USE_CASE_TOKEN,
   IGetPurchaseByIdUseCase,
-} from '@app/purchase/src/usecase/get-pruchase-by-id.usecase';
+} from '@app/purchase/src/usecase/get-purchase-by-id.usecase';
 import {
   IUpdatePurchaseUseCase,
   UPDATE_PURCHASE_USE_CASE_TOKEN,

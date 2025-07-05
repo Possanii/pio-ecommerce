@@ -4,14 +4,11 @@ import {
   ILoggerClient,
   LOGGER_CLIENT_TOKEN,
 } from '@app/shared/src/client/logger.client';
-import {
-  DYNAMODB_CLIENT_TOKEN,
-  IDatabaseClient,
-} from '@app/shared/src/client/dynamodb.client';
-import { ConfigService } from '@nestjs/config';
 import { buildPurchaseMapper } from '@app/purchase/src/mapper/build-purchase.mapper';
-import { PutCommand } from '@aws-sdk/lib-dynamodb';
-import { TableName } from '@app/shared/src/constant/table-name.constant';
+import {
+  IPurchaseRepository,
+  PURCHASE_REPOSITORY_TOKEN,
+} from '@app/purchase/src/repository/purchase.repo';
 
 export const CREATE_PURCHASE_USE_CASE_TOKEN = Symbol(
   'CREATE_PURCHASE_USE_CASE',
@@ -25,26 +22,18 @@ export interface ICreatePurchaseUseCase {
 export class CreatePurchaseUseCase implements ICreatePurchaseUseCase {
   constructor(
     @Inject(LOGGER_CLIENT_TOKEN) private readonly logger: ILoggerClient,
-    @Inject(DYNAMODB_CLIENT_TOKEN) private readonly database: IDatabaseClient,
-    private configService: ConfigService,
+    @Inject(PURCHASE_REPOSITORY_TOKEN)
+    private readonly purchaseRepo: IPurchaseRepository,
   ) {}
-  async execute(data: CreatePurchaseInputDto): Promise<void> {
-    const purchasesTableName = this.configService.get<string>(
-      TableName.PURCHASES,
-    );
 
+  async execute(data: CreatePurchaseInputDto): Promise<void> {
     this.logger.info('Creating purchase');
 
     const purchase = buildPurchaseMapper(data);
 
     this.logger.debug('Purchase information:', { purchase });
 
-    const command = new PutCommand({
-      TableName: purchasesTableName,
-      Item: purchase,
-    });
-
-    await this.database.putItem(command);
+    await this.purchaseRepo.create(purchase);
 
     this.logger.info('Purchase has been created successfully');
   }
