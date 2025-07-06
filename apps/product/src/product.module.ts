@@ -17,11 +17,19 @@ import {
   DELETE_PRODUCT_BY_ID_USE_CASE_TOKEN,
   DeleteProductByIdUseCase,
 } from '@app/product/src/usecase/delete-product-by-id.usecase';
+import {
+  PRODUCT_REPOSITORY_TOKEN,
+  ProductRepository,
+} from '@app/product/src/repository/product.repo';
 
 @Module({
   imports: [SharedModule],
   controllers: [ProductController],
   providers: [
+    {
+      provide: PRODUCT_REPOSITORY_TOKEN,
+      useClass: ProductRepository,
+    },
     {
       provide: CREATE_PRODUCT_USE_CASE_TOKEN,
       useClass: CreateProductUseCase,

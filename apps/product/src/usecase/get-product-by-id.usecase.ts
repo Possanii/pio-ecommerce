@@ -1,16 +1,13 @@
 import { ProductDto } from '@app/product/src/dto/product.dto';
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import {
   ILoggerClient,
   LOGGER_CLIENT_TOKEN,
 } from '@app/shared/src/client/logger.client';
 import {
-  DYNAMODB_CLIENT_TOKEN,
-  IDatabaseClient,
-} from '@app/shared/src/client/dynamodb.client';
-import { GetCommand } from '@aws-sdk/lib-dynamodb';
-import { TableName } from '@app/shared/src/constant/table-name.constant';
+  IProductRepository,
+  PRODUCT_REPOSITORY_TOKEN,
+} from '@app/product/src/repository/product.repo';
 
 export const GET_PRODUCT_BY_ID_USE_CASE_TOKEN = Symbol(
   'GET_PRODUCT_BY_ID_USE_CASE',
@@ -23,23 +20,20 @@ export interface IGetProductByIdUseCase {
 @Injectable()
 export class GetProductByIdUseCase implements IGetProductByIdUseCase {
   constructor(
-    @Inject(ConfigService) private readonly configService: ConfigService,
     @Inject(LOGGER_CLIENT_TOKEN) private readonly logger: ILoggerClient,
-    @Inject(DYNAMODB_CLIENT_TOKEN) private readonly database: IDatabaseClient,
+    @Inject(PRODUCT_REPOSITORY_TOKEN)
+    private readonly productRepo: IProductRepository,
   ) {}
 
   async execute(id: string): Promise<ProductDto | null> {
-    const productTableName = this.configService.get<string>(TableName.PRODUCTS);
-
     this.logger.info(`Requesting product with id ${id} from dynamodb`);
 
-    const command = new GetCommand({
-      TableName: productTableName,
-      Key: { id },
-    });
+    const product = await this.productRepo.findById(id);
 
-    const getOutput = await this.database.getItem(command);
+    if (!product) {
+      this.logger.warn(`Product with id ${id} not found`);
+    }
 
-    return getOutput.Item as ProductDto;
+    return product;
   }
 }

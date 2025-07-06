@@ -1,16 +1,13 @@
 import { ProductDto } from '@app/product/src/dto/product.dto';
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  DYNAMODB_CLIENT_TOKEN,
-  IDatabaseClient,
-} from '@app/shared/src/client/dynamodb.client';
-import {
   ILoggerClient,
   LOGGER_CLIENT_TOKEN,
 } from '@app/shared/src/client/logger.client';
-import { ConfigService } from '@nestjs/config';
-import { ScanCommand } from '@aws-sdk/lib-dynamodb';
-import { TableName } from '@app/shared/src/constant/table-name.constant';
+import {
+  IProductRepository,
+  PRODUCT_REPOSITORY_TOKEN,
+} from '@app/product/src/repository/product.repo';
 
 export const GET_PRODUCTS_USE_CASE_TOKEN = Symbol('GET_PRODUCTS_USE_CASE');
 
@@ -21,22 +18,20 @@ export interface IGetProductsUseCase {
 @Injectable()
 export class GetProductsUseCase implements IGetProductsUseCase {
   constructor(
-    @Inject(ConfigService) private readonly configService: ConfigService,
     @Inject(LOGGER_CLIENT_TOKEN) private readonly logger: ILoggerClient,
-    @Inject(DYNAMODB_CLIENT_TOKEN) private readonly database: IDatabaseClient,
+    @Inject(PRODUCT_REPOSITORY_TOKEN)
+    private readonly productRepo: IProductRepository,
   ) {}
 
   async execute(): Promise<ProductDto[]> {
-    const productTableName = this.configService.get<string>(TableName.PRODUCTS);
-
     this.logger.info('Requesting all products to dynamodb');
 
-    const command: ScanCommand = new ScanCommand({
-      TableName: productTableName,
+    const products = await this.productRepo.findAll();
+
+    this.logger.info('All products have been retrieved successfully', {
+      total: products.length,
     });
 
-    const scanOutput = await this.database.scanItems(command);
-
-    return scanOutput.Items as ProductDto[];
+    return products;
   }
 }
