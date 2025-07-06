@@ -4,7 +4,7 @@ import { SharedModule } from '@app/shared/src/shared.module';
 import {
   CREATE_PURCHASE_USE_CASE_TOKEN,
   CreatePurchaseUseCase,
-} from '@app/purchase/src/usecase/crete-purchase.usecase';
+} from '@app/purchase/src/usecase/create-purchase.usecase';
 import {
   GET_PURCHASES_USE_CASE_TOKEN,
   GetPurchasesUseCase,
