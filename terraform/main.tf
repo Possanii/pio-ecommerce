@@ -17,5 +17,20 @@ terraform {
 }
 
 provider "aws" {
-    region = var.aws_region
+  region = var.aws_region
+
+  default_tags {
+    tags = {
+      environment = var.environment
+      project     = var.project_name
+    }
+  }
+}
+
+locals {
+  default_variables = {
+    aws_region     = var.aws_region
+    environment    = var.environment
+    project_name   = var.project_name
+  }
 }
