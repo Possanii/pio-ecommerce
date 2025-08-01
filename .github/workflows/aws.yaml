@@ -1,36 +1,107 @@
-name: Deploy to AWS ECR
+# A descriptive name for your workflow
+name: Build, Approve, and Deploy to AWS
+
+# This workflow runs on any push to the main branch
 on:
-    push:
-        branches:
-        - main
+  push:
+    branches:
+      - main
+
+# Environment variables available to all jobs in the workflow
 env:
-    AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECR_REPOSITORY: pio-ecommerce-user-dev # Define your ECR repository name here
 
 jobs:
-    deploy:
-        name: Deploy to Amazon ECR
-        runs-on: ubuntu-latest
-        environment: dev
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v2
+  # =================================================================
+  # JOB 1: Build the Docker image and wait for the first approval
+  # =================================================================
+  build-and-push-image:
+    name: Build and Push Image
+    runs-on: ubuntu-latest
+    
+    # This 'environment' block creates the FIRST manual approval gate.
+    # The job will pause here until a reviewer approves it.
+    # IMPORTANT: You must configure a 'build-approval' environment in your repo settings.
+    environment: build-approval
 
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v1
+    permissions:
+      contents: read
+      id-token: write # Required for configuring AWS credentials
+    
+    outputs:
+      image_tag: ${{ steps.get_sha.outputs.sha }} # Output the image tag for the next job
 
-            - name: Configure AWS credentials
-              uses: aws-actions/configure-aws-credentials@v2
-              with:
-                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                aws-region: us-east-1
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-            - name: Login to Amazon ECR
-              run: |
-                  aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-            - name: Build and push user image
-              run: |
-                  docker buildx build --platform linux/amd64,linux/arm64 --build-arg APP=user \
-                  -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/pio-ecommerce-user-dev:latest \
-                  --push .
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+        id: login-ecr
+
+      - name: Get git commit SHA
+        id: get_sha
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push user image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            APP=user
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.get_sha.outputs.sha }}
+
+  # =================================================================
+  # JOB 2: Deploy infrastructure and wait for the second approval
+  # =================================================================
+  deploy-infrastructure:
+    name: Deploy Infrastructure
+    runs-on: ubuntu-latest
+    # This job requires the image build to be successful before it can run.
+    needs: build-and-push-image
+
+    # This 'environment' block creates the SECOND manual approval gate.
+    # IMPORTANT: You must configure a 'deploy-approval' environment in your repo settings.
+    environment: deploy-approval
+    
+    permissions:
+      contents: read
+      id-token: write # Required for configuring AWS credentials
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.0
+
+      - name: Terraform Init
+        run: terraform -chdir=./terraform init
+
+      - name: Terraform Apply
+        run: |
+          terraform -chdir=./terraform apply \
+            -var="image_tag=${{ needs.build-and-push-image.outputs.image_tag }}" \
+            -auto-approve
