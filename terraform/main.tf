@@ -32,5 +32,6 @@ locals {
     aws_region     = var.aws_region
     environment    = var.environment
     project_name   = var.project_name
+    image_tag      = var.image_tag
   }
 }

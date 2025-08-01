@@ -15,3 +15,5 @@ variable "project_name" {
     type        = string
     default     = "pio-ecommerce"
 }
+
+variable "image_tag" {}
