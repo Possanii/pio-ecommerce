@@ -1,6 +1,6 @@
 resource "aws_ecs_service" "user_service" {
   name = "user-service"
-  cluster = aws_ecs_cluster.ecs_cluster
+  cluster = aws_ecs_cluster.ecs_cluster.arn
   launch_type = "FARGATE"
   enable_execute_command = true
 
