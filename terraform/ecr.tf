@@ -1,5 +1,5 @@
 module "user_ecr_repositories" {
-  source = "module/ecr"
+  source = "./module/ecr"
 
   project_name = var.project_name
   environment = var.environment
