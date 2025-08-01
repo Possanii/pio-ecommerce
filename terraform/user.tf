@@ -4,8 +4,8 @@ resource "aws_ecs_service" "user_service" {
   launch_type = "FARGATE"
   enable_execute_command = true
 
-  deployment_maximum_percent = 10
-  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent = 100
+  deployment_minimum_healthy_percent = 0
   desired_count = 1
   task_definition = aws_ecs_task_definition.user-td.arn
 
@@ -19,24 +19,27 @@ resource "aws_ecs_service" "user_service" {
 resource "aws_ecs_task_definition" "user-td" {
   container_definitions = jsonencode([
     {
-      name = "user-service"
-      image = module.user_ecr_repositories.ecr_repository_url
-      cpu = 256
-      memory = 512
+      name      = "user-service"
+      image     = "${module.user_ecr_repositories.ecr_repository_url}:${var.image_tag}"
+      cpu       = 256
+      memory    = 512
       essential = true
       portMappings = [
         {
           containerPort = 443
-          hostPort = 443
+          hostPort      = 443
         },
         {
           containerPort = 80
-          hostPort = 80
+          hostPort      = 80
         }
       ]
-      environment = {
-        PORT = 80
-      }
+      environment = [
+        {
+          name  = "PORT"
+          value = "80"
+        }
+      ]
     }
   ])
   family                = "user-service"
@@ -45,4 +48,6 @@ resource "aws_ecs_task_definition" "user-td" {
   cpu                  = "256"
   memory               = "512"
   network_mode         = "awsvpc"
+  execution_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/ecsTaskExecutionRole"
+  task_role_arn        = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/ecsTaskExecutionRole"
 }

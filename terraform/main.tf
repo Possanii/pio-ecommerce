@@ -35,3 +35,5 @@ locals {
     image_tag      = var.image_tag
   }
 }
+
+data "aws_caller_identity" "current" {}
