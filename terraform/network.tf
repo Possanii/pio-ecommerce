@@ -53,3 +53,39 @@ resource "aws_security_group" "sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.pio-ecommerce-vpc.id
+
+  tags = {
+    Name = "pio-ecommerce-igw"
+  }
+}
+
+resource "aws_route_table" "public_rt" {
+  vpc_id = aws_vpc.pio-ecommerce-vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
+  tags = {
+    Name = "pio-ecommerce-public-rt"
+  }
+}
+
+resource "aws_route_table_association" "rta_sn1" {
+  subnet_id      = aws_subnet.sn1.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+resource "aws_route_table_association" "rta_sn2" {
+  subnet_id      = aws_subnet.sn2.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+resource "aws_route_table_association" "rta_sn3" {
+  subnet_id      = aws_subnet.sn3.id
+  route_table_id = aws_route_table.public_rt.id
+}
