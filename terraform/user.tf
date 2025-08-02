@@ -38,6 +38,10 @@ resource "aws_ecs_task_definition" "user-td" {
         {
           name  = "PORT"
           value = "80"
+        },
+        {
+          name = "NODE_ENV"
+          value = var.environment,
         }
       ]
     }
